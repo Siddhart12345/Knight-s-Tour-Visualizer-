@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Knight's Tour — INT3120 AI</title>
+
+  <link rel="icon" type="image/svg+xml"
+    href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 45 45'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' fill='%232F5D50' stroke='%232F5D50' stroke-width='1.2' stroke-linejoin='round' stroke-linecap='round' d='M 22,10 C 32.5,11 38.5,18 38,39 L 15,39 C 15,30 25,32.5 23,18 C 24.38,20.91 18.45,25.37 16,27 C 13,29 13.18,31.34 11,31 C 9.958,30.06 12.41,27.96 11,28 C 10,28 11.19,29.23 10,30 C 9,30 5.997,31 6,26 C 6,24 12,14 12,14 C 12,14 13.89,12.1 14,10.5 C 13.27,9.506 13.5,8.5 13.5,7.5 C 14.5,6.5 16.5,10 16.5,10 L 18.5,10 C 18.5,10 19.28,8.008 21,7 C 22,7 22,10 22,10 Z M 9.5 25.5 A 0.7 0.7 0 1 0 8.1 25.5 A 0.7 0.7 0 1 0 9.5 25.5 Z M 16.2 15.5 A 0.8 1.8 30 1 0 14.8 14.7 A 0.8 1.8 30 1 0 16.2 15.5 Z'/%3E%3C/svg%3E" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+  <header>
+    <div class="header-brand">
+      <div class="header-top-row">
+        <svg class="brand-icon" viewBox="0 0 45 45" aria-hidden="true">
+          <path fill-rule="evenodd" clip-rule="evenodd" fill="currentColor" stroke="currentColor" stroke-width="1.2"
+            stroke-linejoin="round" stroke-linecap="round" d="
+          M 22,10 C 32.5,11 38.5,18 38,39 L 15,39 C 15,30 25,32.5 23,18
+          C 24.38,20.91 18.45,25.37 16,27 C 13,29 13.18,31.34 11,31 C 9.958,30.06 12.41,27.96 11,28 C 10,28 11.19,29.23 10,30 C 9,30 5.997,31 6,26 C 6,24 12,14 12,14 C 12,14 13.89,12.1 14,10.5 C 13.27,9.506 13.5,8.5 13.5,7.5 C 14.5,6.5 16.5,10 16.5,10 L 18.5,10 C 18.5,10 19.28,8.008 21,7 C 22,7 22,10 22,10 Z
+          M 9.5 25.5 A 0.7 0.7 0 1 0 8.1 25.5 A 0.7 0.7 0 1 0 9.5 25.5 Z
+          M 16.2 15.5 A 0.8 1.8 30 1 0 14.8 14.7 A 0.8 1.8 30 1 0 16.2 15.5 Z
+        " />
+        </svg>
+        <h1>Knight's Tour</h1>
+      </div>
+      <span class="subtitle">A visual study of Warnsdorff's heuristic &amp; backtracking · INT3120 Artificial
+        Intelligence</span>
+    </div>
+    <div class="header-actions">
+      <button id="theme-toggle" type="button" title="Switch theme (light / dark)" aria-label="Toggle theme">
+        <svg class="theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="5"></circle>
+          <line x1="12" y1="1" x2="12" y2="3"></line>
+          <line x1="12" y1="21" x2="12" y2="23"></line>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+          <line x1="1" y1="12" x2="3" y2="12"></line>
+          <line x1="21" y1="12" x2="23" y2="12"></line>
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
+        <span id="theme-text">Dark</span>
+      </button>
+    </div>
+  </header>
+
+  <main>
+
+    <section id="board-section" aria-label="Chessboard">
+      <div id="board-container">
+        <div class="col-labels" id="col-labels-top"></div>
+        <div class="coord-row">
+          <div class="row-labels" id="row-labels-left"></div>
+          <div id="board-wrap">
+            <div id="board-grid" role="grid" aria-label="Knight's tour chessboard"></div>
+            <svg id="path-svg" aria-hidden="true"></svg>
+          </div>
+          <div class="row-labels" id="row-labels-right"></div>
+        </div>
+        <div class="col-labels" id="col-labels-bottom"></div>
+      </div>
+
+      <div id="board-hint" class="board-hint">Choose a starting square on the board</div>
+
+      <div class="move-log-card">
+        <span class="move-log-label">Notation</span>
+        <div class="move-log" id="move-log" tabindex="0" aria-label="Move history in algebraic notation">
+          <span class="move-log-empty">Waiting for start</span>
+        </div>
+      </div>
+    </section>
+
+    <div id="controls-panel">
+
+      <div class="panel-section">
+        <span class="section-label">Board &amp; Algorithm</span>
+
+        <div class="form-row">
+          <label for="board-size">Board size</label>
+          <select id="board-size">
+            <option value="5">5 × 5</option>
+            <option value="6">6 × 6</option>
+            <option value="7">7 × 7</option>
+            <option value="8" selected>8 × 8</option>
+            <option value="9">9 × 9</option>
+            <option value="10">10 × 10</option>
+            <option value="11">11 × 11</option>
+            <option value="12">12 × 12</option>
+          </select>
+        </div>
+
+        <div class="segmented-control" role="group" aria-label="Algorithm Selection">
+          <button type="button" class="seg-btn active" data-value="warnsdorff">Warnsdorff</button>
+          <button type="button" class="seg-btn" data-value="backtrack">Backtracking</button>
+          <button type="button" class="seg-btn" data-value="hybrid">Hybrid</button>
+        </div>
+
+        <select id="algo-select" class="sr-only" aria-hidden="true" tabindex="-1">
+          <option value="warnsdorff" selected>Warnsdorff's Heuristic</option>
+          <option value="backtrack">Backtracking (DFS)</option>
+          <option value="hybrid">Hybrid (BT + Warnsdorff)</option>
+        </select>
+
+        <div class="form-row" id="tiebreak-row">
+          <label for="tiebreak-select">Tie-break rule</label>
+          <select id="tiebreak-select">
+            <option value="first">First found</option>
+            <option value="random">Random</option>
+            <option value="pohl">Pohl's secondary rule</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="panel-section">
+        <span class="section-label">Display &amp; Speed</span>
+
+        <div class="toggle-row">
+          <span class="toggle-label">Show Warnsdorff degrees</span>
+          <label class="custom-checkbox">
+            <input type="checkbox" id="show-degrees" />
+            <span class="checkbox-box"></span>
+          </label>
+        </div>
+
+        <div class="toggle-row">
+          <span class="toggle-label">Draw tour path</span>
+          <label class="custom-checkbox">
+            <input type="checkbox" id="show-path" checked />
+            <span class="checkbox-box"></span>
+          </label>
+        </div>
+
+        <div class="form-row" style="margin-top: 10px;">
+          <div class="speed-control">
+            <div class="speed-header">
+              <label for="speed-slider">Speed</label>
+              <span class="speed-readout" id="speed-label">5</span>
+            </div>
+            <input type="range" id="speed-slider" min="1" max="10" value="5" />
+            <div class="speed-ticks">
+              <span>Slow</span>
+              <span>Fast</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel-section">
+        <span class="section-label">Execution</span>
+        <div class="btn-group">
+          <button class="btn btn-primary" id="btn-run" disabled type="button">
+            <svg class="btn-icon" viewBox="0 0 24 24">
+              <polygon points="6 3 20 12 6 21 6 3" fill="currentColor" />
+            </svg>
+            Run
+          </button>
+          <button class="btn btn-secondary" id="btn-pause" disabled type="button">
+            <svg class="btn-icon" viewBox="0 0 24 24">
+              <rect x="6" y="4" width="4" height="16" fill="currentColor" />
+              <rect x="14" y="4" width="4" height="16" fill="currentColor" />
+            </svg>
+            Pause
+          </button>
+          <button class="btn btn-secondary" id="btn-step" disabled type="button">
+            <svg class="btn-icon" viewBox="0 0 24 24">
+              <polygon points="5 4 15 12 5 20 5 4" fill="currentColor" />
+              <line x1="19" y1="4" x2="19" y2="20" />
+            </svg>
+            Step
+          </button>
+          <button class="btn btn-reset" id="btn-reset" type="button">
+            <svg class="btn-icon" viewBox="0 0 24 24">
+              <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+              <path d="M3 3v5h5" />
+            </svg>
+            Reset
+          </button>
+        </div>
+        <div class="shortcuts-hint">
+          <kbd>Space</kbd> Run / Pause &nbsp;·&nbsp; <kbd>S</kbd> Step &nbsp;·&nbsp; <kbd>R</kbd> Reset
+        </div>
+      </div>
+
+      <div class="panel-section">
+        <span class="section-label">Ledger</span>
+        <div class="ledger">
+          <div class="ledger-row">
+            <span class="ledger-label">Moves made</span>
+            <span class="ledger-dots"></span>
+            <span class="ledger-val" id="stat-moves">0</span>
+          </div>
+          <div class="ledger-row">
+            <span class="ledger-label">Backtracks</span>
+            <span class="ledger-dots"></span>
+            <span class="ledger-val" id="stat-backtracks">0</span>
+          </div>
+          <div class="ledger-row">
+            <span class="ledger-label">Nodes explored</span>
+            <span class="ledger-dots"></span>
+            <span class="ledger-val" id="stat-nodes">0</span>
+          </div>
+          <div class="ledger-row">
+            <span class="ledger-label">Time elapsed</span>
+            <span class="ledger-dots"></span>
+            <span class="ledger-val" id="stat-time">0.00s</span>
+          </div>
+          <div class="ledger-row">
+            <span class="ledger-label">Status</span>
+            <span class="ledger-dots"></span>
+            <span class="ledger-val status-indicator" id="stat-status">
+              <span class="status-dot idle"></span>
+              <span class="status-text">Idle</span>
+            </span>
+          </div>
+        </div>
+        <div id="tour-type-display" class="tour-completion-note"></div>
+      </div>
+
+      <div class="panel-section span-full">
+        <span class="section-label">Algorithm Comparison</span>
+        <p style="font-size: 0.8rem; color: var(--ink-muted); margin-bottom: 10px;">
+          Evaluates Warnsdorff and Backtracking from the current start square. Backtracking stops at 2,000,000 nodes.
+        </p>
+        <button class="btn btn-secondary btn-full" id="btn-compare" type="button">Run comparison</button>
+        <div id="comparison-section">
+          <table class="comp-table" id="comp-table">
+            <thead>
+              <tr>
+                <th>Metric</th>
+                <th>Warnsdorff</th>
+                <th>Backtracking</th>
+              </tr>
+            </thead>
+            <tbody id="comp-tbody"></tbody>
+          </table>
+          <p id="comp-note"></p>
+        </div>
+      </div>
+
+      <div class="panel-section span-full">
+        <span class="section-label">Notes</span>
+        <div class="how-it-works-text" id="how-it-works">
+          <h4>Warnsdorff's Heuristic</h4>
+          <p>A greedy rule published in 1823: at each square, move to the unvisited square with the fewest onward knight
+            moves. By prioritising the least accessible squares, it avoids trapping the knight early and solves most
+            boards in near-linear time.</p>
+
+          <h4>Backtracking (DFS)</h4>
+          <p>Systematically tests all eight knight moves in a fixed order. When trapped, it unwinds the last move (red
+            indicator) and tests the next branch. Complete and optimal, but worst-case exponential on boards larger than
+            6 × 6.</p>
+
+          <h4>Hybrid</h4>
+          <p>Sorts candidate moves by Warnsdorff degree before exploring them with depth-first search, combining greedy
+            speed with a completeness guarantee.</p>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <div id="toast-container" aria-live="polite"></div>
+
+  <footer>
+    <span><strong>INT3120 Artificial Intelligence</strong> · GUI Mini Project</span>
+    <span>Siddharth Shekhar &amp; Ayan Roy · 2026</span>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+
+</html>
