@@ -1,7 +1,6 @@
 # ♞ Knight's Tour Visualizer
 
-> **INT3120 Artificial Intelligence – GUI Mini Project**  
-> **Team:** Siddharth Shekhar  registration Number 2430030164· Ayan Roy 2430030167
+
 
 An interactive, browser-based visualizer for the classic **Knight's Tour** problem — a chess puzzle where a knight must visit every square on the board exactly once.
 
