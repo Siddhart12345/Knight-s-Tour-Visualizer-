@@ -1,9 +1,8 @@
 # Project Report — Knight's Tour Visualizer
 
-**Course:** INT3120 Artificial Intelligence  
+
 **Project Type:** GUI Mini Project  
-**Team:** Siddharth Shekhar · Ayan Roy  
-**Date:** October 2026  
+
 
 ---
 
